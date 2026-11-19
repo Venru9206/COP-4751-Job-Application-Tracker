@@ -11,6 +11,7 @@
     <a href="{{ url_for('applications') }}">Applications</a>
     <a href="{{ url_for('profile') }}">Profile</a>
     <a href="{{ url_for('dashboard') }}">Dashboard</a>
+    <a href="{{ url_for('job_match') }}">Job Match</a>
   </nav>
   <main>
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -22,4 +23,3 @@
   </main>
 </body>
 </html>
-
