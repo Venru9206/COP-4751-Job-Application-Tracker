@@ -600,8 +600,34 @@ def dashboard():
                LIMIT 5"""
         )
         recent = cur.fetchall()
+    finally:
+        cur.close()
+        conn.close()
 
-        cur.execute("SELECT skill_name FROM user_skills")
+    total_apps = totals["applications"]
+    by_status = []
+    for status in STATUS_OPTIONS:
+        n = counts.get(status, 0)
+        pct = round(n * 100 / total_apps, 1) if total_apps else 0
+        by_status.append({"status": status, "n": n, "pct": pct})
+
+    return render_template(
+        "dashboard.html",
+        totals=totals,
+        interviews=counts.get("Interview completed", 0),
+        offers=counts.get("Offer accepted", 0),
+        by_status=by_status,
+        recent=recent,
+    )
+
+
+# ---------- JOB MATCH ----------
+@app.route("/job-match")
+def job_match():
+    conn = get_connection()
+    cur = conn.cursor(dictionary=True)
+    try:
+        cur.execute("SELECT skill_name FROM user_skills ORDER BY skill_name")
         user_skills = [row["skill_name"] for row in cur.fetchall()]
 
         cur.execute(
@@ -613,13 +639,6 @@ def dashboard():
     finally:
         cur.close()
         conn.close()
-
-    total_apps = totals["applications"]
-    by_status = []
-    for status in STATUS_OPTIONS:
-        n = counts.get(status, 0)
-        pct = round(n * 100 / total_apps, 1) if total_apps else 0
-        by_status.append({"status": status, "n": n, "pct": pct})
 
     matches = []
     for job in job_rows:
@@ -634,17 +653,10 @@ def dashboard():
             "percent": percent,
             "missing": missing,
         })
-    matches.sort(key=lambda m: (m["percent"] is None, -(m["percent"] or 0)))
+    matches.sort(key=lambda m: (m["percent"] is None, -(m["percent"] or 0), m["job_title"]))
 
-    return render_template(
-        "dashboard.html",
-        totals=totals,
-        interviews=counts.get("Interview completed", 0),
-        offers=counts.get("Offer accepted", 0),
-        by_status=by_status,
-        recent=recent,
-        matches=matches,
-    )
+    return render_template("job_match.html", user_skills=user_skills, matches=matches)
+
 # ---------- PROFILE ----------
 
 @app.route("/profile")
@@ -719,3 +731,4 @@ def delete_skill(skill_name):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
