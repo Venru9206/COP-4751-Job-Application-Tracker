@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} - Job Tracker{% endblock %}
+{% block content %}
+<h1>{{ title }}</h1>
+<p>Company: <strong>{{ company.company_name }}</strong></p>
+
+<form method="post" action="{{ action }}">
+  <p><label>First name *<br>
+    <input type="text" name="first_name" maxlength="50"
+           value="{{ contact.get('first_name') or '' }}" required></label></p>
+
+  <p><label>Last name *<br>
+    <input type="text" name="last_name" maxlength="50"
+           value="{{ contact.get('last_name') or '' }}" required></label></p>
+
+  <p><label>Job title<br>
+    <input type="text" name="job_title" maxlength="100"
+           value="{{ contact.get('job_title') or '' }}"></label></p>
+
+  <p><label>Email<br>
+    <input type="email" name="email" maxlength="100"
+           value="{{ contact.get('email') or '' }}"></label></p>
+
+  <p><label>Phone<br>
+    <input type="text" name="phone" maxlength="30"
+           value="{{ contact.get('phone') or '' }}"></label></p>
+
+  <p><label>LinkedIn URL<br>
+    <input type="url" name="linkedin_url" maxlength="255"
+           placeholder="https://www.linkedin.com/in/..."
+           value="{{ contact.get('linkedin_url') or '' }}"></label></p>
+
+  <p><label>Notes<br>
+    <textarea name="notes" rows="4" cols="50">{{ contact.get('notes') or '' }}</textarea></label></p>
+
+  <div class="form-actions">
+    <button type="submit" class="btn">Save contact</button>
+    <a href="{{ url_for('contacts_list', company_id=company.company_id) }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

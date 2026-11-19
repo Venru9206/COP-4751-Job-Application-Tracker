@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Companies</h1>
+<a class="button" href="{{ url_for('company_add') }}">Add Company</a>
+
+<table>
+  <tr>
+    <th>Name</th><th>Industry</th><th>City</th><th>State</th><th>Actions</th>
+  </tr>
+  {% for c in companies %}
+  <tr>
+    <td>{{ c.company_name }}</td>
+    <td>{{ c.industry or '' }}</td>
+    <td>{{ c.city or '' }}</td>
+    <td>{{ c.state or '' }}</td>
+    <td>
+      <a href="{{ url_for('company_edit', company_id=c.company_id) }}">Edit</a>
+      <a href="{{ url_for('contacts_list', company_id=c.company_id) }}">Contacts</a>
+      <form method="post" action="{{ url_for('company_delete', company_id=c.company_id) }}"
+            style="display:inline" onsubmit="return confirm('Delete this company? Its jobs and contacts will also be deleted.');">
+        <button type="submit">Delete</button>
+      </form>
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="5">No companies yet.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}
+

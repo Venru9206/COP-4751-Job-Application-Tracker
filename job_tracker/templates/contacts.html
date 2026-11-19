@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Contacts - {{ company.company_name }} - Job Tracker{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Contacts at {{ company.company_name }}</h1>
+  <a class="btn" href="{{ url_for('contact_add', company_id=company.company_id) }}">Add contact</a>
+</div>
+<p><a href="{{ url_for('companies_list') }}">&larr; Back to companies</a></p>
+
+{% if contacts %}
+<table>
+  <thead>
+    <tr><th>Name</th><th>Title</th><th>Email</th><th>Phone</th><th>LinkedIn</th><th></th></tr>
+  </thead>
+  <tbody>
+  {% for c in contacts %}
+    <tr>
+      <td>{{ c.first_name }} {{ c.last_name }}</td>
+      <td>{{ c.job_title or '' }}</td>
+      <td>{% if c.email %}<a href="mailto:{{ c.email }}">{{ c.email }}</a>{% endif %}</td>
+      <td>{{ c.phone or '' }}</td>
+      <td>
+        {% if c.linkedin_url and c.linkedin_url.startswith(('https://', 'http://')) %}
+          <a href="{{ c.linkedin_url }}" target="_blank" rel="noopener noreferrer">Profile</a>
+        {% endif %}
+      </td>
+      <td class="actions">
+        <a href="{{ url_for('contact_edit', contact_id=c.contact_id) }}">Edit</a>
+        <form method="post"
+              action="{{ url_for('contact_delete', contact_id=c.contact_id) }}"
+              onsubmit="return confirm('Delete this contact? This cannot be undone.');"
+              style="display:inline;">
+          <button type="submit" class="link-danger">Delete</button>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="empty">No contacts at {{ company.company_name }} yet. <a href="{{ url_for('contact_add', company_id=company.company_id) }}">Add the first one</a>.</p>
+{% endif %}
+{% endblock %}

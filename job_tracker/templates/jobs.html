@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Jobs</h1>
+<a class="button" href="{{ url_for('job_add') }}">Add Job</a>
+
+<table>
+  <tr>
+    <th>Title</th><th>Company</th><th>Type</th><th>Salary</th><th>Skills</th><th>Posted</th><th>Active</th><th>Actions</th>
+  </tr>
+  {% for j in jobs %}
+  <tr>
+    <td>{{ j.job_title }}</td>
+    <td>{{ j.company_name }}</td>
+    <td>{{ j.job_type or '' }}</td>
+    <td>{% if j.salary_min or j.salary_max %}{{ j.salary_min or '?' }} - {{ j.salary_max or '?' }}{% endif %}</td>
+    <td>{{ j.skills }}</td>
+    <td>{{ j.date_posted or '' }}</td>
+    <td>{{ 'Yes' if j.is_active else 'No' }}</td>
+    <td>
+      <a href="{{ url_for('job_edit', job_id=j.job_id) }}">Edit</a>
+      <form method="post" action="{{ url_for('job_delete', job_id=j.job_id) }}"
+            style="display:inline" onsubmit="return confirm('Delete this job?');">
+        <button type="submit">Delete</button>
+      </form>
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="8">No jobs yet.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ action }} Application</h1>
+
+{% if error %}
+<p class="flash error">{{ error }}</p>
+{% endif %}
+
+{% set app = application or {} %}
+
+<form method="post">
+  <label for="job_id">Job</label>
+  <select name="job_id" id="job_id" required>
+    <option value="">-- Choose a job --</option>
+    {% for job in jobs %}
+    <option value="{{ job.job_id }}"
+            {% if app.job_id|string == job.job_id|string %}selected{% endif %}>
+      {{ job.company_name }} - {{ job.job_title }}
+    </option>
+    {% endfor %}
+  </select>
+
+  <label for="application_date">Application date</label>
+  <input type="date" name="application_date" id="application_date"
+         value="{{ app.application_date or '' }}" required>
+
+  <label for="status">Status</label>
+  <select name="status" id="status" required>
+    {% for s in statuses %}
+    <option value="{{ s }}" {% if app.status == s %}selected{% endif %}>{{ s }}</option>
+    {% endfor %}
+  </select>
+
+  <label for="resume_version">Resume version</label>
+  <input type="text" name="resume_version" id="resume_version"
+         value="{{ app.resume_version or '' }}">
+
+  <label>
+    <input type="checkbox" name="cover_letter_sent" value="1"
+           {% if app.cover_letter_sent %}checked{% endif %}>
+    Cover letter sent
+  </label>
+
+  <label for="response_date">Response date</label>`t
+  <input type="date" name="response_date" id="response_date"
+         value="{{ app.response_date or '' }}">
+
+  <label for="interview_date">Interview date</label>
+  <input type="date" name="interview_date" id="interview_date"
+         value="{{ app.interview_date or '' }}">
+
+  <label for="notes">Notes</label>
+  <textarea name="notes" id="notes" rows="4">{{ app.notes or '' }}</textarea>
+
+  <label for="interview_data">Interview data (JSON, optional)</label>
+  <textarea name="interview_data" id="interview_data" rows="4"
+            placeholder='{"rounds": [{"type": "phone", "result": "passed"}]}'>{{ app.interview_data or '' }}</textarea>
+
+  <button type="submit">Save</button>
+  <a href="{{ url_for('applications') }}">Cancel</a>
+</form>
+{% endblock %}

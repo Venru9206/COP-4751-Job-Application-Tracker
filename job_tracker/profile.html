@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Profile</h1>
+<p>List the skills you have. The dashboard compares these against each job's requirements to calculate your match.</p>
+
+<h2>Add a Skill</h2>
+<form method="post" action="{{ url_for('add_skill') }}">
+  <label for="skill_name">Skill name</label>
+  <input type="text" id="skill_name" name="skill_name" maxlength="50" required>
+  <button type="submit">Add Skill</button>
+</form>
+
+<h2>My Skills</h2>
+<table>
+  <tr>
+    <th>Skill</th><th>Added</th><th>Actions</th>
+  </tr>
+  {% for skill in skills %}
+  <tr>
+    <td>{{ skill.skill_name }}</td>
+    <td>{{ skill.created_at.strftime('%Y-%m-%d') if skill.created_at else '' }}</td>
+    <td>
+      <form method="post" action="{{ url_for('delete_skill', skill_name=skill.skill_name) }}"
+            style="display:inline" onsubmit="return confirm('Remove this skill?');">
+        <button type="submit">Remove</button>
+      </form>
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="3">No skills added yet.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Job Tracker{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+
+<div class="stats">
+  <div class="stat"><span class="num">{{ totals.applications }}</span><span class="label">Applications</span></div>
+  <div class="stat"><span class="num">{{ interviews }}</span><span class="label">Interviews completed</span></div>
+  <div class="stat"><span class="num">{{ offers }}</span><span class="label">Offers accepted</span></div>
+  <div class="stat"><span class="num">{{ totals.jobs }}</span><span class="label">Jobs tracked</span></div>
+  <div class="stat"><span class="num">{{ totals.companies }}</span><span class="label">Companies</span></div>
+  <div class="stat"><span class="num">{{ totals.contacts }}</span><span class="label">Contacts</span></div>
+</div>
+
+<h2>Job Match</h2>
+<table>
+  <tr>
+    <th>Job</th><th>Company</th><th>Match</th><th>Missing Skills</th><th>Status</th>
+  </tr>
+  {% for m in matches %}
+  <tr>
+    <td>{{ m.job_title }}</td>
+    <td>{{ m.company_name }}</td>
+    <td>{% if m.percent is none %}N/A{% else %}{{ m.percent }}%{% endif %}</td>
+    <td>{% if m.percent is none %}N/A{% else %}{{ m.missing|join(', ') or 'None' }}{% endif %}</td>
+    <td>{% if m.is_active %}Active{% else %}Inactive{% endif %}</td>
+  </tr>
+  {% else %}
+  <tr><td colspan="5">No jobs yet.</td></tr>
+  {% endfor %}
+</table>
+
+<h2>Applications by status</h2>
+{% if totals.applications %}
+<table class="breakdown">
+  <thead><tr><th>Status</th><th>Count</th><th>Share</th></tr></thead>
+  <tbody>
+  {% for row in by_status %}
+    <tr>
+      <td>{{ row.status }}</td>
+      <td>{{ row.n }}</td>
+      <td class="bar-cell">
+        <div class="bar"><span style="width: {{ row.pct }}%"></span></div>
+        <small>{{ row.pct }}%</small>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="empty">No applications yet. <a href="{{ url_for('add_application') }}">Add your first application</a>.</p>
+{% endif %}
+
+<h2>Most recent applications</h2>
+{% if recent %}
+<table>
+  <thead><tr><th>Date</th><th>Job</th><th>Company</th><th>Status</th></tr></thead>
+  <tbody>
+  {% for a in recent %}
+    <tr>
+      <td>{{ a.application_date }}</td>
+      <td>{{ a.job_title }}</td>
+      <td>{{ a.company_name }}</td>
+      <td>{{ a.status }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="empty">Nothing to show yet.</p>
+{% endif %}
+{% endblock %}

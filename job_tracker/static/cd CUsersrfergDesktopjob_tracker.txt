@@ -1,0 +1,14 @@
+cd C:\Users\rferg\Desktop\job_tracker
+set DB_PASSWORD=mysqlrootpassword9206!
+python app.py
+
+aac52b2b7ce6ddc5e926f8c11941200cee6e05d14598caf7ff085552c323179a
+
+$env:FLASK_SECRET_KEY = "aac52b2b7ce6ddc5e926f8c11941200cee6e05d14598caf7ff085552c323179a"
+
+set FLASK_SECRET_KEY=aac52b2b7ce6ddc5e926f8c11941200cee6e05d14598caf7ff085552c323179a
+python app.py
+
+cd C:\Users\rferg\Desktop\job_tracker
+set DB_PASSWORD=mysqlrootpassword9206!
+set FLASK_SECRET_KEY=aac52b2b7ce6ddc5e926f8c11941200cee6e05d14598caf7ff085552c323179a
