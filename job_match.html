@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Job Match - Job Tracker{% endblock %}
+{% block content %}
+<h1>Job Match</h1>
+
+{% if user_skills %}
+<p class="lead">Ranked by how many of each job's required skills you have. Your skills: {{ user_skills|join(', ') }}. <a href="/profile">Edit skills</a></p>
+{% else %}
+<p class="empty">You haven't added any skills yet. <a href="/profile">Add your skills on the Profile page</a> to see your matches.</p>
+{% endif %}
+
+<table>
+  <thead>
+    <tr><th>#</th><th>Job</th><th>Company</th><th>Match</th><th>Missing skills</th><th>Status</th></tr>
+  </thead>
+  <tbody>
+  {% for m in matches %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td>{{ m.job_title }}</td>
+      <td>{{ m.company_name }}</td>
+      <td>{% if m.percent is none %}N/A{% else %}{{ m.percent }}%{% endif %}</td>
+      <td>{% if m.percent is none %}N/A{% else %}{{ m.missing|join(', ') or 'None' }}{% endif %}</td>
+      <td>{% if m.is_active %}Active{% else %}Inactive{% endif %}</td>
+    </tr>
+  {% else %}
+    <tr><td colspan="6">No jobs yet.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
